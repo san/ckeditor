@@ -2,7 +2,8 @@ class Ckeditor::PicturesController < Ckeditor::ApplicationController
   skip_before_filter :verify_authenticity_token, only: :create
 
   def index
-    @pictures = Ckeditor.picture_adapter.find_all(ckeditor_pictures_scope)
+    skip_policy_scope
+    @pictures = Ckeditor.picture_adapter.find_all(ckeditor_pictures_scope({assetable: (ckeditor_current_user if ckeditor_current_user)}))
     @pictures = Ckeditor::Paginatable.new(@pictures).page(params[:page])
 
     respond_to do |format|

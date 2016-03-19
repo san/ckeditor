@@ -2,7 +2,8 @@ class Ckeditor::AttachmentFilesController < Ckeditor::ApplicationController
   skip_before_filter :verify_authenticity_token, only: :create
   
   def index
-    @attachments = Ckeditor.attachment_file_adapter.find_all(ckeditor_attachment_files_scope)
+    skip_policy_scope
+    @attachments = Ckeditor.attachment_file_adapter.find_all(ckeditor_attachment_files_scope({assetable: (ckeditor_current_user if ckeditor_current_user)}))
     @attachments = Ckeditor::Paginatable.new(@attachments).page(params[:page])
 
     respond_to do |format|
